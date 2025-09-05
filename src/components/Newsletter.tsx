@@ -20,6 +20,29 @@ function ArrowRightIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 }
 
 export function Newsletter() {
+  const handleAction = async (formData: FormData) => {
+    'use server'
+
+    const response = await fetch(
+      'https://api.airtable.com/v0/appmxY0XahewE8f8X/tblFkAYJdIjg86TCK',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.PERSONAL_ACCESS_TOKEN}`,
+        },
+        body: JSON.stringify({
+          fields: {
+            email: formData.get('email'),
+          },
+        }),
+      },
+    )
+
+    const result = await response.json()
+    console.log(result)
+  }
+
   return (
     <section id="newsletter" aria-label="Newsletter">
       <Container>
@@ -42,7 +65,7 @@ export function Newsletter() {
                 notified when tickets go on sale.
               </p>
             </div>
-            <form>
+            <form action={handleAction}>
               <h3 className="text-lg font-semibold tracking-tight text-blue-900">
                 Sign up to our newsletter <span aria-hidden="true">&darr;</span>
               </h3>
@@ -53,6 +76,7 @@ export function Newsletter() {
                   placeholder="Email address"
                   aria-label="Email address"
                   className="-my-2.5 flex-auto bg-transparent pr-2.5 pl-6 text-base text-slate-900 placeholder:text-slate-400 focus:outline-hidden"
+                  name="email"
                 />
                 <Button type="submit">
                   <span className="sr-only sm:not-sr-only">Sign up today</span>
